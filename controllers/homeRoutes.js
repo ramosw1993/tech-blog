@@ -2,6 +2,7 @@ const router = require("express").Router();
 const { Post, User, Comment } = require("../models");
 const withAuth = require("../helpers/auth");
 
+// Get all projects and JOIN with user data
 router.get("/", async (req, res) => {
   try {
     const postData = await Post.findAll({
@@ -25,6 +26,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Use withAuth middleware to prevent access to route
 router.get("/post/:id", withAuth, async (req, res) => {
   try {
     const postData = await Post.findByPk(req.params.id, {
@@ -85,9 +87,10 @@ router.get('/add', (req, res) => {
   res.render('login');
 });
 
+  // If the user is already logged in, redirect the request to another route
 router.get("/login", (req, res) => {
   if (req.session.logged_in) {
-    res.redirect("/");
+    res.redirect("homepage");
     return;
   }
   res.render("login");
