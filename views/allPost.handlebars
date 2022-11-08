@@ -1,1 +1,41 @@
-{{!-- every post --}}
+<div class="row">
+  <div class="col-auto">
+    <h2>{{ title }}</h2>
+    <h6>{{ content }}</h6>
+    <p>Posted by: {{ user.username }}</p>
+    <p>Dated: {{ format_date date_created }}</p>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+    <h3>Create a comment:</h3>
+
+    <form class="form new-comment-form">
+      <div class="form-group">
+        <label for="comment-desc">Comment:</label>
+        <input class="form-input" type="text" id="comment-desc" name="comment-desc" />
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
+    </form>
+  </div>
+
+  {{#if logged_in}}
+    {{#each comments as |comment|}}
+    <div class="row mb-2">
+      <div class="col-md-8">
+        <h4>{{ comment.comment }}</h4>
+      </div>
+      <div class="col-md-4">
+        <h6>Posted By: {{ comment.user.username }}</h6>
+        <h6>Dated: {{ format_date date_created }}</h6>
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>
+
+<script src="/public/comment.js"></script>

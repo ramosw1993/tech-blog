@@ -9,11 +9,10 @@ router.get("/dashboard", withAuth, async (req, res) => {
       include: [
         {
           model: Post,
-          attributes: ["id", "title", "content", "date_created"],
         },
       ],
     });
-    const newUserData = userData.get({ Plain: true });
+    const newUserData = userData.get({ plain: true });
     res.render("dashboard", {
       ...newUserData,
       logged_in: true,
@@ -36,5 +35,15 @@ router.get("/dashboard", withAuth, async (req, res) => {
     res.status(400).json(err);
   }
 });
+
+router.get("/login", (req, res) => {
+  if (req.session.logged_in) {
+    res.redirect("/dashboard");
+    return;
+  }
+
+  res.render("login");
+});
+
 
 module.exports = router;

@@ -5,15 +5,16 @@ const withAuth = require("../helpers/auth");
 router.get("/", async (req, res) => {
   try {
     const postData = await Post.findAll({
+      // attributes: ['id','title', 'content', 'date_created'],
       include: [
         {
           model: User,
-          attributes: ["name"],
+          attributes: ["username"],
         },
       ],
     });
 
-    const posts = postData.map((posts) => posts.get({ Plain: true }));
+    const posts = postData.map((posts) => posts.get({ plain: true }));
     res.render("homepage", {
       posts,
       logged_in: req.session.logged_in,
@@ -30,7 +31,7 @@ router.get("/post/:id", withAuth, async (req, res) => {
       include: [
         {
           model: User,
-          attributes: ["name"],
+          attributes: ["username"],
         },
         {
           model: Comment,
@@ -38,7 +39,7 @@ router.get("/post/:id", withAuth, async (req, res) => {
         },
       ],
     });
-    const post = postData.get({ Plain: true });
+    const post = postData.get({ plain: true });
     res.render("post", {
       ...post,
       logged_in: req.session.logged,
@@ -49,13 +50,13 @@ router.get("/post/:id", withAuth, async (req, res) => {
   }
 });
 
-router.get("/editpost/:id", withAuth, async (req, res) => {
+router.get("/edit/:id", withAuth, async (req, res) => {
   try {
     const postData = await Post.findByPk(req.params.id, {
       include: [
         {
           model: User,
-          attributes: ["name"],
+          attributes: ["username"],
         },
         {
           model: Comment,
@@ -63,7 +64,7 @@ router.get("/editpost/:id", withAuth, async (req, res) => {
         },
       ],
     });
-    const newPost = postData.get({ Plain: true });
+    const newPost = postData.get({ plain: true });
     res.render("edit", {
       ...newPost,
       logged_in: req.session.logged_in,
@@ -72,6 +73,16 @@ router.get("/editpost/:id", withAuth, async (req, res) => {
     console.log(err);
     res.status(500).json(err);
   }
+});
+
+router.get('/add', (req, res) => {
+  if (req.session.logged_in) {
+    res.render('add', {
+      logged_in: req.session.logged_in,
+    });
+    return;
+  }
+  res.render('login');
 });
 
 router.get("/login", (req, res) => {
